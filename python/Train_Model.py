@@ -10,12 +10,13 @@ from imblearn.combine import SMOTETomek
 from xgboost import XGBClassifier
 import  joblib
 import pickle
+from sklearn.metrics import confusion_matrix, precision_score, recall_score
 
 #Loading data into the model
-dataframe  = pd.read_csv("E:\Loan_Approval_System\loanapprovalsystem\src\main\python\loan_data.csv")
+dataframe  = pd.read_csv("E:\Loan_Approval_System\python\loan_data.csv")
 
 dataframe = dataframe.drop_duplicates()
-
+dataframe['loan_status'].value_counts(normalize=True)
 # Fill missing values
 for col in dataframe.select_dtypes(include=['number']).columns:
     dataframe[col] = dataframe[col].fillna(dataframe[col].median())
@@ -103,7 +104,7 @@ early_stopping = keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, r
 model.fit(X_train,Y_train, epochs = 50, batch_size = 64, validation_data = (x_test,y_test),callbacks=[early_stopping])
 
 #Predictions
-y_predict = (model.predict(x_test)>0.5).astype("int32")
+y_predict = (model.predict(x_test)>0.4).astype("int32")
 
 #Evaluation
 accuracy = accuracy_score(y_test,y_predict)
@@ -131,3 +132,65 @@ joblib.dump(Rf, "rfclassifier.pkl")
 
 pickle.dump(xgb, open('xgbclassifiers.sav', 'wb' ))
 pickle.dump(scaler, open('scalers.sav','wb'))
+
+
+print(confusion_matrix(y_test, y_predict))
+print(f"Precision: {precision_score(y_test, y_predict)}")
+print(f"Recall: {recall_score(y_test, y_predict)}")
+
+
+# ✅ Example prediction usage
+# def predict_loan_approval(data):
+#     model = tf.keras.models.load_model("finsure.h5")
+#     scaler = joblib.load("scaler.pkl")
+#     label_encoders = joblib.load("label_encoders.pkl")
+
+#     data['loan_int_rate'] = loan_interest_rates.get(data['loan_intent'], 12.0)
+#     df_input = pd.DataFrame([data])
+
+#     for col in label_encoders:
+#         df_input[col] = label_encoders[col].transform(df_input[col])
+
+#     df_input['loan_to_income_ratio'] = df_input['loan_amnt'] / df_input['person_income']
+#     df_input['employment_income_ratio'] = df_input['person_emp_exp'] / df_input['person_income']
+
+#     df_input_scaled = scaler.transform(df_input)
+#     print("Processed input to model:", df_input_scaled)
+#     prediction = (model.predict(df_input_scaled) > 0.5).astype("int32")
+
+#     if prediction[0][0] == 1:
+#         return 'Approved: Everything is fine!'
+#     else:
+#         rejection_reasons = []
+#         if data['credit_score'] < 600:
+#             rejection_reasons.append('Low credit score')
+#         if data['loan_percent_income'] > 0.4:
+#             rejection_reasons.append('High loan-to-income ratio')
+#         if data['person_emp_exp'] < 2:
+#             rejection_reasons.append('Insufficient employment experience')
+#         if data['loan_int_rate'] > 15:
+#             rejection_reasons.append('High loan interest rate')
+#         if data['previous_loan_defaults_on_file'] == 'Yes':
+#             rejection_reasons.append('Previous loan defaults')
+#         if not rejection_reasons:
+#             rejection_reasons.append('Other financial factors')
+#         return f'Rejected: {", ".join(rejection_reasons)}'
+
+# # ✅ Sample input to test
+# sample_data = {
+#   "person_age": 28,
+#   "person_gender": "female",
+#   "person_education": "Master",
+#   "person_income": 90000.0,
+#   "person_emp_exp": 3,
+#   "person_home_ownership": "RENT",
+#   "loan_amnt": 20000.0,
+#   "loan_intent": "MEDICAL",
+#   "loan_int_rate": 10.0,
+#   "loan_percent_income": 0.22,
+#   "cb_person_cred_hist_length": 6,
+#   "credit_score": 480,
+#   "previous_loan_defaults_on_file": "No"
+# }
+
+# print(predict_loan_approval(sample_data))

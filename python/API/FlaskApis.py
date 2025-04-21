@@ -29,22 +29,29 @@ def preprocess_input(data):
                 data[key] = 0  # default if not present
 
         # Feature engineering
-        loan_to_income = float(data['loan_amnt']) / float(data['person_income'])
-        employment_income_ratio = float(data['person_emp_exp']) / float(data['person_income'])
+        # loan_to_income = float(data['loan_amnt']) / float(data['person_income'])
+        # employment_income_ratio = float(data['person_emp_exp']) / float(data['person_income'])
+
+        income = float(data.get('person_income', 1)) or 1
+        loan_to_income = float(data.get('loan_amnt', 0)) / income
+        employment_income_ratio = float(data.get('person_emp_exp', 0)) / income
+
 
         # Create input list
         input_features = [
             float(data.get('person_age', 0)),
+            float(data.get('person_gender', 0)),          
+            float(data.get('person_education', 0)), 
             float(data.get('person_income', 0)),
-            float(data.get('person_home_ownership', 0)),
             float(data.get('person_emp_exp', 0)),
+            float(data.get('person_home_ownership', 0)),
             float(data.get('loan_amnt', 0)),
             float(data.get('loan_intent', 0)),
-            float(data.get('loan_grade', 0)),
             float(data.get('loan_int_rate', 0)),
             float(data.get('loan_percent_income', 0)),
-            float(data.get('cb_person_default_on_file', 0)),
             float(data.get('cb_person_cred_hist_length', 0)),
+            float(data.get('credit_score', 0)),
+            float(data.get('previous_loan_defaults_on_file',0)),
             loan_to_income,
             employment_income_ratio
         ]
@@ -61,12 +68,22 @@ def predict_loan():
         data = request.get_json()
         if not data:
             return jsonify({'error': 'No input data received'}), 400
+        
+        credit_score = data.get('credit_score')  
+        loan_percent_income = data.get('loan_percent_income')
+        person_edu = data.get('person_education')
+        loan_amt = data.get('loan_amnt')
+
+        if(credit_score<350 or loan_percent_income > 0.4 or (person_edu not in ['Bachelor', 'PhD', 'Associate', 'Master'] and loan_amt > 400000)):
+            return jsonify({'error': 'Loan application rejected'}), 400
 
         processed_input = preprocess_input(data)
+        # print("Processed input to model:", processed_input)
+
 
         # TensorFlow prediction
         tf_pred = tf_model.predict(processed_input)
-        tf_result = int((tf_pred > 0.5)[0][0])
+        tf_result = int((tf_pred > 0.6)[0][0])
 
         # XGBoost prediction
         xgb_result = int(xgb_model.predict(processed_input)[0])
