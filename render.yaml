@@ -3,8 +3,8 @@ services:
     name: loan-approval-api
     env: python
     plan: free
-    buildCommand: "pip install -r python/API/requirements.txt"
-    startCommand: "python python/API/FlaskApis.py"
+    buildCommand: pip install -r python/API/requirements.txt
+    startCommand: python python/API/FlaskApis.py
     envVars:
       - key: FLASK_ENV
         value: development
