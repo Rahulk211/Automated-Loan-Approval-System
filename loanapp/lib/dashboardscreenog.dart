@@ -114,7 +114,7 @@ class DashboardscreenogState extends State<Dashboardscreenog> {
                         title: 'Apply loan',
                         color: Colors.blueAccent,
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const Applyloanscreen()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) =>  ApplyForLoanScreen()));
                         }),
                     ActionButton(
                         icon: Icons.list_alt,
