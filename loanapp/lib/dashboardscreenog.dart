@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:loanapp/applyLoanScreen.dart';
 import 'package:loanapp/modules/ActivityTile.dart';
 import 'package:loanapp/modules/DashboardCards.dart';
 import 'package:loanapp/modules/ActionButton.dart';
@@ -112,7 +113,9 @@ class DashboardscreenogState extends State<Dashboardscreenog> {
                         icon: Icons.add_box,
                         title: 'Apply loan',
                         color: Colors.blueAccent,
-                        onTap: () {}),
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const Applyloanscreen()));
+                        }),
                     ActionButton(
                         icon: Icons.list_alt,
                         title: 'My Application',
