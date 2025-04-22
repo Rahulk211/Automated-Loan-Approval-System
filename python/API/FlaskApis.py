@@ -3,6 +3,7 @@ import numpy as np
 import pickle
 import joblib
 import tensorflow as tf
+import os
 
 # ✅ Load models and preprocessing tools
 xgb_model = pickle.load(open('xgbclassifiers.sav', 'rb'))
@@ -102,4 +103,5 @@ def predict_loan():
 
 # ✅ Run app
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port)
