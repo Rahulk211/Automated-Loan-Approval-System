@@ -114,7 +114,11 @@ class DashboardscreenogState extends State<Dashboardscreenog> {
                         title: 'Apply loan',
                         color: Colors.blueAccent,
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) =>  ApplyForLoanScreen()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const Applyloanscreen()));
                         }),
                     ActionButton(
                         icon: Icons.list_alt,
@@ -135,7 +139,6 @@ class DashboardscreenogState extends State<Dashboardscreenog> {
                 const Activitytile(
                     color: Colors.green,
                     title: 'Medical Loan',
-                    subtitle: 'loan for mediacal purpose',
                     icon: Icons.check_box_sharp)
               ],
             ),

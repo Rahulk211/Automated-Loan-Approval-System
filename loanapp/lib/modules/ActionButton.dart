@@ -21,7 +21,7 @@ class ActionButton extends StatelessWidget {
       child: Column(
         children: [
           CircleAvatar(
-            backgroundColor: color.withOpacity(0.2),
+            backgroundColor: color.withAlpha(128),
             radius: 30,
             child: Icon(icon, color: color, size: 28),
           ),

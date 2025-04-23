@@ -5,14 +5,12 @@ import 'package:flutter/material.dart';
 class Activitytile extends StatelessWidget {
   final Color color;
   final String title;
-  final String subtitle;
   final IconData icon;
 
   const Activitytile(
       {super.key,
       required this.color,
       required this.title,
-      required this.subtitle,
       required this.icon});
 
   @override
@@ -23,13 +21,11 @@ class Activitytile extends StatelessWidget {
         child: ListTile(
           leading: CircleAvatar(
             radius: 25,
-            backgroundColor: color.withOpacity(0.2),
+            backgroundColor: color.withAlpha(51),
             child: Icon(icon, color: color),
           ),
           title: Text(title,
               style: const TextStyle(fontSize: 16, color: Colors.black)),
-          subtitle: Text(subtitle,
-              style: const TextStyle(fontSize: 14, color: Colors.grey)),
         ));
   }
 }
