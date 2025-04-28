@@ -6,6 +6,7 @@ import 'package:loanapp/applyLoanScreen.dart';
 import 'package:loanapp/modules/ActivityTile.dart';
 import 'package:loanapp/modules/DashboardCards.dart';
 import 'package:loanapp/modules/ActionButton.dart';
+// import 'package:loanapp/modules/myapplicationscreen.dart';
 
 class Dashboardscreenog extends StatefulWidget {
   const Dashboardscreenog({super.key});
@@ -17,29 +18,77 @@ class Dashboardscreenog extends StatefulWidget {
 class DashboardscreenogState extends State<Dashboardscreenog> {
   String? userName;
   bool isLoading = true;
+  int total = 0;
+  int approved = 0;
+  int rejected = 0;
+  int pending = 0;
+  List<Map<String, dynamic>> recentApp = [];
+
   @override
   void initState() {
     super.initState();
-    fetchFirstName();
+    fetchDashboardData();
   }
 
-  Future<void> fetchFirstName() async {
+  Future<void> fetchDashboardData() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        DocumentSnapshot userdoc = await FirebaseFirestore.instance
-            .collection('User')
-            .doc(user.uid)
-            .get();
-
-        setState(() {
-          userName = userdoc['firstName'];
-          isLoading = false;
-        });
+      if (user == null) {
+        return;
       }
+
+      final userDoc = await FirebaseFirestore.instance
+          .collection('User')
+          .doc(user.uid)
+          .get();
+
+      final applicationsQuery = await FirebaseFirestore.instance
+          .collection('loan_applications')
+          .where('uid', isEqualTo: user.uid)
+          .orderBy('date_applied', descending: true)
+          .get();
+      List<Map<String, dynamic>> recent = [];
+      int a = 0, r = 0, p = 0;
+
+      // DocumentSnapshot userdoc = await FirebaseFirestore.instance
+      //     .collection('User')
+      //     .doc(user.uid)
+      //     .get();
+
+      for (var doc in applicationsQuery.docs) {
+        String status = doc['loan_status'];
+        if (status == 'Approved') {
+          a++;
+        } else if (status == 'Rejected') {
+          r++;
+        } else {
+          p++;
+        }
+
+        if (recent.length < 3) {
+          recent.add({
+            'title': doc['loan_intent'],
+            'status': status,
+          });
+        }
+      }
+
+      setState(() {
+        userName = userDoc['firstName'];
+        total = applicationsQuery.docs.length;
+        approved = a;
+        rejected = r;
+        pending = p;
+        recentApp = recent;
+        isLoading = false;
+      });
+      // setState(() {
+      //   userName = userdoc['firstName'];
+      //   isLoading = false;
+      // });
     } catch (e) {
       // ignore: avoid_print
-      print(" Error fetching name: $e");
+      print(" Error fetching dashboard data: $e");
       setState(() => isLoading = false);
     }
   }
@@ -67,34 +116,34 @@ class DashboardscreenogState extends State<Dashboardscreenog> {
                 const SizedBox(
                   height: 20,
                 ),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Dashboardcards(
                         icon: Icons.insert_drive_file,
                         title: 'Total',
-                        value: 'null',
+                        value: '$total',
                         color: Colors.blue),
                     Dashboardcards(
                         icon: Icons.check_circle,
                         title: 'Approved',
-                        value: 'null',
+                        value: '$approved',
                         color: Colors.green)
                   ],
                 ),
                 const SizedBox(height: 10),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Dashboardcards(
                         icon: Icons.cancel_presentation_rounded,
                         title: 'Rejected',
-                        value: 'null',
+                        value: '$rejected',
                         color: Colors.red),
                     Dashboardcards(
                         icon: Icons.hourglass_top,
                         title: 'Pending',
-                        value: 'null',
+                        value: '$pending',
                         color: Colors.orange)
                   ],
                 ),
@@ -120,11 +169,17 @@ class DashboardscreenogState extends State<Dashboardscreenog> {
                                   builder: (context) =>
                                       const Applyloanscreen()));
                         }),
-                    ActionButton(
-                        icon: Icons.list_alt,
-                        title: 'My Application',
-                        color: Colors.blueAccent,
-                        onTap: () {}),
+                    // ActionButton(
+                    //     icon: Icons.list_alt,
+                    //     title: 'My Application',
+                    //     color: Colors.blueAccent,
+                    //     onTap: () {
+                    //       Navigator.push(
+                    //           context,
+                    //           MaterialPageRoute(
+                    //               builder: (context) =>
+                    //                   const Myapplicationscreen()));
+                    //     }),
                   ],
                 ),
                 const SizedBox(
@@ -136,10 +191,28 @@ class DashboardscreenogState extends State<Dashboardscreenog> {
                 const SizedBox(
                   height: 10,
                 ),
-                const Activitytile(
-                    color: Colors.green,
-                    title: 'Medical Loan',
-                    icon: Icons.check_box_sharp)
+                Column(
+                  children: recentApp.map((app) {
+                    Color color = app['status'] == 'Approved'
+                        ? Colors.green
+                        : app['status'] == 'Rejected'
+                            ? Colors.red
+                            : Colors.orange;
+
+                    IconData icon = app['status'] == 'Approved'
+                        ? Icons.check_box
+                        : app['status'] == 'Rejected'
+                            ? Icons.cancel
+                            : Icons.hourglass_top;
+
+                    return Activitytile(
+                      color: color,
+                      title: app['title'],
+                      subtitle: app['status'],
+                      icon: icon,
+                    );
+                  }).toList(),
+                ),
               ],
             ),
           ),

@@ -75,7 +75,7 @@ def predict_loan():
         person_edu = data.get('person_education')
         loan_amt = data.get('loan_amnt')
 
-        if(credit_score<350 or loan_percent_income > 0.4 or (person_edu not in ['Bachelor', 'PhD', 'Associate', 'Master'] and loan_amt > 400000)):
+        if(credit_score<350 or loan_percent_income > 0.65 or (person_edu not in ['Bachelor', 'PhD', 'Associate', 'Master'] and loan_amt > 400000)):
             return jsonify({'error': 'Loan application rejected'}), 400
 
         processed_input = preprocess_input(data)

@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:loanapp/resultScreen.dart';
@@ -29,12 +30,13 @@ class _ApplyloanscreenState extends State<Applyloanscreen> {
   final TextEditingController _loanAmount = TextEditingController();
   final TextEditingController _creditScore = TextEditingController();
   final TextEditingController _creditHisLen = TextEditingController();
-  final TextEditingController _loanIntent = TextEditingController();
+  //final TextEditingController _loanIntent = TextEditingController();
 
+  String loanIntent = 'PERSONAL';
   String gender = 'male';
   String education = 'Bachelor';
   String homeOwnership = 'RENT';
-  String creditHistory = 'Yes';
+  String creditHistory = 'No';
 
   bool isLoading = false;
 
@@ -60,7 +62,7 @@ class _ApplyloanscreenState extends State<Applyloanscreen> {
       "person_emp_exp": experience,
       "person_home_ownership": homeOwnership,
       "loan_amnt": loanAmt,
-      "loan_intent": _loanIntent.text.toUpperCase(),
+      "loan_intent": loanIntent,
       "loan_int_rate": 12.0,
       "loan_percent_income": income != 0 ? (loanAmt / (income * 12)) : 0,
       "cb_person_cred_hist_length": creditHistLen,
@@ -95,8 +97,11 @@ class _ApplyloanscreenState extends State<Applyloanscreen> {
       resultStatus = 'Rejected';
     }
 
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
     final docRef =
         await FirebaseFirestore.instance.collection('loan_applications').add({
+      'uid': userId,
       'loan_intent': requestedData['loan_intent'],
       'loan_amount': requestedData['loan_amnt'],
       'date_applied': DateTime.now(),
@@ -189,11 +194,29 @@ class _ApplyloanscreenState extends State<Applyloanscreen> {
                                       decoration: const InputDecoration(
                                           labelText:
                                               'Credit History Length (in Years(1,2,3 ...))')),
-                                  TextFormField(
-                                      controller: _loanIntent,
-                                      decoration: const InputDecoration(
-                                          labelText:
-                                              'Loan Intent (e.g., PERSONAL)')),
+                                  // TextFormField(
+                                  //     controller: _loanIntent,
+                                  //     decoration: const InputDecoration(
+                                  //         labelText:
+                                  //             'Loan Intent (e.g., PERSONAL)')),
+                                  DropdownButtonFormField(
+                                    value: loanIntent,
+                                    decoration: const InputDecoration(
+                                        labelText: 'Intent of loan'),
+                                    items: [
+                                      'PERSONAL',
+                                      'EDUCATION',
+                                      'MEDICAL',
+                                      'VENTURE',
+                                      'HOMEIMPROVEMENT',
+                                      'DEBTCONSOLIDATION'
+                                    ]
+                                        .map((val) => DropdownMenuItem(
+                                            value: val, child: Text(val)))
+                                        .toList(),
+                                    onChanged: (String? val) =>
+                                        setState(() => loanIntent = val!),
+                                  ),
                                   TextFormField(
                                       controller: _repaymentDurationController,
                                       decoration: const InputDecoration(
