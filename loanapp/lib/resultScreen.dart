@@ -1,8 +1,9 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:loanapp/modules/ViewLoanDocument.dart';
 
 class Resultscreen extends StatelessWidget {
   final String applicationId;
@@ -79,13 +80,32 @@ class Resultscreen extends StatelessWidget {
                               status == 'Approved' ? Colors.green : Colors.red,
                         )),
                     const SizedBox(height: 20),
-                    // if (status == 'Approved')
-                    //   ElevatedButton(
-                    //     onPressed: () {
-                    //       // Open PDF from docUrl
-                    //     },
-                    //     child: const Text('View Loan Document'),
-                    //   ),
+                    if (status == 'Approved')
+                      ElevatedButton(
+                        onPressed: () async {
+                          final docSnap = await FirebaseFirestore.instance
+                              .collection('loan_applications')
+                              .doc(applicationId)
+                              .get();
+
+                          final loandoc = docSnap.data()?['loan_contract_text'];
+
+                          if (loandoc != null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Viewloandocument(
+                                        LoanDocument: loandoc)));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text(
+                                      'Loan document not found yet. Please try again later.')),
+                            );
+                          }
+                        },
+                        child: const Text('View Loan Document'),
+                      ),
                   ],
                 ),
               ),

@@ -6,6 +6,7 @@ import 'package:loanapp/applyLoanScreen.dart';
 import 'package:loanapp/modules/ActivityTile.dart';
 import 'package:loanapp/modules/DashboardCards.dart';
 import 'package:loanapp/modules/ActionButton.dart';
+import 'package:loanapp/resultScreen.dart';
 // import 'package:loanapp/modules/myapplicationscreen.dart';
 
 class Dashboardscreenog extends StatefulWidget {
@@ -69,6 +70,7 @@ class DashboardscreenogState extends State<Dashboardscreenog> {
           recent.add({
             'title': doc['loan_intent'],
             'status': status,
+            'application_id': doc.id
           });
         }
       }
@@ -205,11 +207,21 @@ class DashboardscreenogState extends State<Dashboardscreenog> {
                             ? Icons.cancel
                             : Icons.hourglass_top;
 
-                    return Activitytile(
-                      color: color,
-                      title: app['title'],
-                      subtitle: app['status'],
-                      icon: icon,
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Resultscreen(
+                                  applicationId: app['application_id']),
+                            ));
+                      },
+                      child: Activitytile(
+                        color: color,
+                        title: app['title'],
+                        subtitle: app['status'],
+                        icon: icon,
+                      ),
                     );
                   }).toList(),
                 ),
