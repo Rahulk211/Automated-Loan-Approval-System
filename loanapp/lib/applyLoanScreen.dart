@@ -295,13 +295,13 @@ class _ApplyloanscreenState extends State<Applyloanscreen> {
                                     decoration: const InputDecoration(
                                         labelText: 'Choose your Bank'),
                                     items: [
-                                      'Sate Bank of India'
-                                          'Union Bank'
-                                          'HDFC Bank'
-                                          'Punjab National Bank'
-                                          'Punjab and Sindh Bank'
-                                          'City bank'
-                                          'Kotak Mahendra Bank'
+                                      'State Bank of India',
+                                      'Union Bank',
+                                      'HDFC Bank',
+                                      'Punjab National Bank',
+                                      'Punjab and Sindh Bank',
+                                      'City bank',
+                                      'Kotak Mahendra Bank',
                                     ]
                                         .map((val) => DropdownMenuItem(
                                             value: val, child: Text(val)))
@@ -320,7 +320,7 @@ class _ApplyloanscreenState extends State<Applyloanscreen> {
                                   TextFormField(
                                       controller: _ifsccodeController,
                                       decoration: const InputDecoration(
-                                          labelText: 'Country')),
+                                          labelText: 'IFSC code')),
                                   const Divider(),
                                   const Text('Loan & Financial Details',
                                       style: TextStyle(
@@ -340,15 +340,15 @@ class _ApplyloanscreenState extends State<Applyloanscreen> {
                                   DropdownButtonFormField(
                                     value: lender,
                                     decoration: const InputDecoration(
-                                        labelText: 'Choose your Bank'),
+                                        labelText: 'Choose your Lending Bank'),
                                     items: [
-                                      'Sate Bank of India'
-                                          'Union Bank'
-                                          'HDFC Bank'
-                                          'Punjab National Bank'
-                                          'Punjab and Sindh Bank'
-                                          'City bank'
-                                          'Kotak Mahendra Bank'
+                                      'State Bank of India',
+                                      'Union Bank',
+                                      'HDFC Bank',
+                                      'Punjab National Bank',
+                                      'Punjab and Sindh Bank',
+                                      'City bank',
+                                      'Kotak Mahendra Bank',
                                     ]
                                         .map((val) => DropdownMenuItem(
                                             value: val, child: Text(val)))

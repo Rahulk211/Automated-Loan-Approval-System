@@ -66,13 +66,13 @@ class DashboardscreenogState extends State<Dashboardscreenog> {
           p++;
         }
 
-        if (recent.length < 3) {
-          recent.add({
-            'title': doc['loan_intent'],
-            'status': status,
-            'application_id': doc.id
-          });
-        }
+        //if (recent.length < 3) {
+        recent.add({
+          'title': doc['loan_intent'],
+          'status': status,
+          'application_id': doc.id
+        });
+        //}
       }
 
       setState(() {
@@ -169,7 +169,9 @@ class DashboardscreenogState extends State<Dashboardscreenog> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const Applyloanscreen()));
+                                      const Applyloanscreen()),).then((_){
+                                        fetchDashboardData();
+                                      });
                         }),
                     // ActionButton(
                     //     icon: Icons.list_alt,

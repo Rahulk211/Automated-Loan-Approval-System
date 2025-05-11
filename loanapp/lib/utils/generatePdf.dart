@@ -40,6 +40,7 @@ Future<String> GenerateAgreement({
   - Date of Birth: $dob
   - ID (Aadhaar/PAN): $id
   - Contact Number: $contact
+  - Address: $fulladdress
   - Gender: $gender
   - Education: $education
   - Home Ownership: $homeOwnership
@@ -51,12 +52,19 @@ Future<String> GenerateAgreement({
   - Employment Experience: $experience years
   - Credit Score: $creditScore
   - Credit History Length: $creditHistLen years
+  - Borrower Bank: $borrowerbank
+  - Borrower Account Holder Name: $borroweraccountholdername
+  - Borrower Account Number: $borroweraccountnumber
+  - Borrower Ifsc code: $borrowerifsccode
 
   Loan Details:
   - Loan Amount: ₹$loanAmount
   - Loan Purpose: $loanIntent
   - Repayment Duration: $repaymentDuration months
   - Interest Rate: $loaninst% 
+  - Lenders Bank : $Bank
+  - Payment Method : $paymentmethod
+  - Repayment Method: $repaymentmethod
   Generate a professional contract agreement including repayment terms, 
     borrower's obligations, and other standard clauses. Write it in a formal tone.
   ''';

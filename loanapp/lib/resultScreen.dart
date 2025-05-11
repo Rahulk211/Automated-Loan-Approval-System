@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:loanapp/dashboardscreenog.dart';
 import 'package:loanapp/modules/ViewLoanDocument.dart';
 
 class Resultscreen extends StatelessWidget {
@@ -52,7 +53,7 @@ class Resultscreen extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Container(
                 padding: const EdgeInsets.all(20.0),
-                height: 300,
+                height: 350,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.blueAccent),
                   borderRadius: BorderRadius.circular(10),
@@ -106,6 +107,23 @@ class Resultscreen extends StatelessWidget {
                         },
                         child: const Text('View Loan Document'),
                       ),
+                    
+                    ElevatedButton.icon(onPressed: () {
+                        Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const Dashboardscreenog()),
+      (route) => false,
+                        ); // Takes you back to Dashboard
+                      },
+                      icon: const Icon(Icons.dashboard),
+                      label: const Text("Back to Dashboard"),
+                      style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue[50],
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      )
                   ],
                 ),
               ),
